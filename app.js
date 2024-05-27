@@ -12,10 +12,13 @@ app.use(express.static('public'));
 // Utilizza il router per le rotte relative ai post
 app.use('/posts', postRouter);
 
-// Rimuovi la vecchia gestione della rotta '/'
 app.get('/', (req, res) => {
-    res.send('<h1>Benvenuto nel mio blog!</h1>');
+    res.send(`
+        <h1>Benvenuto nel mio blog!</h1>
+        <a href="/posts">Visualizza tutti i post</a>
+    `);
 });
+
 
 // Gestione della favicon
 app.get('/favicon.ico', (req, res) => {

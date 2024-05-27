@@ -4,22 +4,24 @@ const posts = require('../data/data.json');
 
 // Funzione per ottenere tutti i post
 exports.getPosts = (req, res) => {
+    const initialPage = `<a href="/">Torna alla pagina iniziale</a>`;
 
     res.format({
         'application/json': function () {
             res.json(posts);
         },
         'text/html': function () {
-            let html = '<ul>';
+            let html = initialPage + '<ul>';
             posts.forEach(post => {
+                // Creazione del link per la visualizzazione del singolo post
+                const postLink = `<a href="/posts/${post.slug}">${post.title}</a>`;
                 html += `
-                        <li>
-                            <h2>${post.title}</h2>
-                            <img src="/imgs/posts/${post.image}" alt="${post.title}" style="width:300px">
-                            <p>${post.content}</p>
-                            <p>Tags: ${post.tags.join(', ')}</p>
-                            <a href="/posts/${post.slug}/download">Download Image</a>
-                        </li>`;
+                    <li>
+                        <h2>${postLink}</h2>
+                        <img src="/imgs/posts/${post.image}" alt="${post.title}" style="width:300px">
+                        <p>${post.content}</p>
+                        <p>Tags: ${post.tags.join(', ')}</p>                            
+                    </li>`;
             });
             html += '</ul>';
             res.send(html);
@@ -29,6 +31,7 @@ exports.getPosts = (req, res) => {
         }
     });
 };
+
 
 // Funzione per visualizzare un singolo post
 exports.getPostBySlug = (req, res) => {
@@ -49,6 +52,7 @@ exports.getPostBySlug = (req, res) => {
         },
         'text/html': function () {
             const html = `
+                <a href="/posts">Torna alla lista dei post</a>
                 <h2>${post.title}</h2>
                 <a href="${post.image_url}" target="_blank">
                     <img src="/imgs/posts/${post.image}" alt="${post.title}" style="width:300px">
