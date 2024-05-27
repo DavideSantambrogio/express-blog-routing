@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const posts = require('../data/data.json');
+let posts = require('../data/data.json');
 
 // Funzione per ottenere tutti i post
 exports.getPosts = (req, res) => {
