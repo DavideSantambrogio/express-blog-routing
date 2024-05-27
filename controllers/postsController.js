@@ -4,7 +4,6 @@ const posts = require('../data/data.json');
 
 // Funzione per ottenere tutti i post
 exports.getPosts = (req, res) => {
-    const accept = req.headers.accept;
 
     res.format({
         'application/json': function () {
@@ -19,6 +18,7 @@ exports.getPosts = (req, res) => {
                             <img src="/imgs/posts/${post.image}" alt="${post.title}" style="width:300px">
                             <p>${post.content}</p>
                             <p>Tags: ${post.tags.join(', ')}</p>
+                            <a href="/posts/${post.slug}/download">Download Image</a>
                         </li>`;
             });
             html += '</ul>';
@@ -40,7 +40,8 @@ exports.getPostBySlug = (req, res) => {
         return res.status(404).json({ error: 'Post not found' });
     }
 
-    const accept = req.headers.accept;
+    post.image_url = `/imgs/posts/${post.image}`;
+
 
     res.format({
         'application/json': function () {
@@ -49,9 +50,12 @@ exports.getPostBySlug = (req, res) => {
         'text/html': function () {
             const html = `
                 <h2>${post.title}</h2>
-                <img src="/imgs/posts/${post.image}" alt="${post.title}" style="width:300px">
+                <a href="${post.image_url}" target="_blank">
+                    <img src="/imgs/posts/${post.image}" alt="${post.title}" style="width:300px">
+                </a>
                 <p>${post.content}</p>
                 <p>Tags: ${post.tags.join(', ')}</p>
+                <a href="${post.image_url}" download>Download Image</a>
             `;
             res.send(html);
         },

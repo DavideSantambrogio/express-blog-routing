@@ -9,7 +9,7 @@ C’è qualche strumento che ci permette di codificare lo slug?
 - [x] Scrivere tutte le funzioni delle rotte nel controller dedicato
 - [x] Registrare il router dentro app.js con il prefisso /posts.
 Bonus
-- [] Nella rotta show, aggiungere al post una proprietà image_url dove creare il link completo per l'immagine
+- [x] Nella rotta show, aggiungere al post una proprietà image_url dove creare il link completo per l'immagine
 - [] Aggiungere un'altra proprietà image_download_url che invece dovrà far scaricare l'immagine puntando alla rotta download
 - [] Rendere navigabili i post nella index, stampando un link per la show di ciascuno
 Buon Lavoro
