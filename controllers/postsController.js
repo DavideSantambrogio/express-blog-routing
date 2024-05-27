@@ -11,7 +11,7 @@ exports.getPosts = (req, res) => {
             res.json(posts);
         },
         'text/html': function () {
-            let html = '<h1>Benvenuto nel mio blog!</h1><ul>';
+            let html = '<ul>';
             posts.forEach(post => {
                 html += `
                         <li>
@@ -22,6 +22,37 @@ exports.getPosts = (req, res) => {
                         </li>`;
             });
             html += '</ul>';
+            res.send(html);
+        },
+        default: function () {
+            res.status(406).send('Not Acceptable');
+        }
+    });
+};
+
+// Funzione per visualizzare un singolo post
+exports.getPostBySlug = (req, res) => {
+    const slug = req.params.slug;
+    const post = posts.find(post => post.slug === slug);
+
+    // Verifica se il post è stato trovato
+    if (!post) {
+        return res.status(404).json({ error: 'Post not found' });
+    }
+
+    const accept = req.headers.accept;
+
+    res.format({
+        'application/json': function () {
+            res.json(post);
+        },
+        'text/html': function () {
+            const html = `
+                <h2>${post.title}</h2>
+                <img src="/imgs/posts/${post.image}" alt="${post.title}" style="width:300px">
+                <p>${post.content}</p>
+                <p>Tags: ${post.tags.join(', ')}</p>
+            `;
             res.send(html);
         },
         default: function () {
@@ -63,40 +94,7 @@ exports.addPost = (req, res) => {
     });
 };
 
-// Funzione per visualizzare un singolo post
-
-exports.getPostBySlug = (req, res) => {
-    const slug = req.params.slug;
-    const post = posts.find(post => post.slug === slug);
-
-    // Verifica se il post è stato trovato
-    if (!post) {
-        return res.status(404).json({ error: 'Post not found' });
-    }
-
-    const accept = req.headers.accept;
-
-    res.format({
-        'application/json': function () {
-            res.json(post);
-        },
-        'text/html': function () {
-            const html = `
-                <h2>${post.title}</h2>
-                <img src="/imgs/posts/${post.image}" alt="${post.title}" style="width:300px">
-                <p>${post.content}</p>
-                <p>Tags: ${post.tags.join(', ')}</p>
-            `;
-            res.send(html);
-        },
-        default: function () {
-            res.status(406).send('Not Acceptable');
-        }
-    });
-};
-
-// Funzione per la creazione di un post
-
+// Funzione per creare una pagina per la creazione di un nuovo post
 exports.createPostPage = (req, res) => {
     const accept = req.headers.accept;
 
