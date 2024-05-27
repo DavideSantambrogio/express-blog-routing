@@ -1,24 +1,19 @@
 const express = require('express');
 const app = express();
-const postsController = require('./controllers/posts');
-const path = require('path');
+const postRouter = require('./routers/postRouter'); // Importa il router per le rotte dei post
+const postsController = require('./controllers/postsController'); // Importa il controller dei post
 
 // Middleware per il parsing del corpo della richiesta
 app.use(express.json());
 
 // Configurare gli asset statici
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
 
-// Rotte
-app.get('/', (req, res) => {
-    res.send('<h1>Benvenuto nel mio blog!</h1>');
-});
+// Utilizza il router per le rotte relative ai post
+app.use(postRouter);
 
-// Rotta per ottenere i post
-app.get('/posts', postsController.getPosts);
-
-// Rotta per aggiungere un nuovo post
-app.post('/posts', postsController.addPost);
+// Rotta per la home
+app.get('/', postsController.getPosts);
 
 // Gestione della favicon
 app.get('/favicon.ico', (req, res) => {

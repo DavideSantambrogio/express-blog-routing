@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-let posts = require('../data/data.json');
+const posts = require('../data/data.json');
 
 // Funzione per ottenere tutti i post
 exports.getPosts = (req, res) => {
@@ -11,9 +11,10 @@ exports.getPosts = (req, res) => {
             res.json(posts);
         },
         'text/html': function () {
-            let html = '<ul>';
+            let html = '<h1>Benvenuto nel mio blog!</h1><ul>';
             posts.forEach(post => {
-                html += `<li>
+                html += `
+                        <li>
                             <h2>${post.title}</h2>
                             <img src="/imgs/posts/${post.image}" alt="${post.title}" style="width:300px">
                             <p>${post.content}</p>
@@ -60,4 +61,46 @@ exports.addPost = (req, res) => {
         // Invia una risposta con il nuovo post aggiunto e lo status code 201 Created
         res.status(201).json(newPost);
     });
+};
+
+exports.getPostBySlug = (req, res) => {
+    const slug = req.params.slug;
+    const post = posts.find(post => post.slug === slug);
+
+    // Verifica se il post è stato trovato
+    if (!post) {
+        return res.status(404).json({ error: 'Post not found' });
+    }
+
+    const accept = req.headers.accept;
+
+    res.format({
+        'application/json': function () {
+            res.json(post);
+        },
+        'text/html': function () {
+            const html = `
+                <h2>${post.title}</h2>
+                <img src="/imgs/posts/${post.image}" alt="${post.title}" style="width:300px">
+                <p>${post.content}</p>
+                <p>Tags: ${post.tags.join(', ')}</p>
+            `;
+            res.send(html);
+        },
+        default: function () {
+            res.status(406).send('Not Acceptable');
+        }
+    });
+};
+
+exports.createPostPage = (req, res) => {
+    const accept = req.headers.accept;
+
+    if (accept && accept.includes('text/html')) {
+        // Se la richiesta accetta HTML, restituisci una pagina HTML con un h1
+        res.send('<h1>Creazione nuovo post</h1>');
+    } else {
+        // Altrimenti, restituisci un errore 406 per indicare che il tipo di risposta non è accettato
+        res.status(406).send('Not Acceptable');
+    }
 };
