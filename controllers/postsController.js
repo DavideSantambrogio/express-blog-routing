@@ -63,6 +63,8 @@ exports.addPost = (req, res) => {
     });
 };
 
+// Funzione per visualizzare un singolo post
+
 exports.getPostBySlug = (req, res) => {
     const slug = req.params.slug;
     const post = posts.find(post => post.slug === slug);
@@ -93,6 +95,8 @@ exports.getPostBySlug = (req, res) => {
     });
 };
 
+// Funzione per la creazione di un post
+
 exports.createPostPage = (req, res) => {
     const accept = req.headers.accept;
 
@@ -103,4 +107,27 @@ exports.createPostPage = (req, res) => {
         // Altrimenti, restituisci un errore 406 per indicare che il tipo di risposta non è accettato
         res.status(406).send('Not Acceptable');
     }
+};
+
+// Funzione per scaricare l'immagine del post tramite lo slug
+exports.downloadImageBySlug = (req, res) => {
+    const slug = req.params.slug;
+    const post = posts.find(post => post.slug === slug);
+
+    // Verifica se il post è stato trovato
+    if (!post) {
+        return res.status(404).json({ error: 'Post not found' });
+    }
+
+    // Percorso completo dell'immagine
+    const imagePath = path.join(__dirname, `../public/imgs/posts/${post.image}`);
+
+    // Invia il file come allegato
+    res.download(imagePath, (err) => {
+        if (err) {
+            console.error('Errore durante il download dell\'immagine:', err);
+            return res.status(500).json({ error: 'Errore durante il download dell\'immagine' });
+        }
+        console.log('Immagine scaricata correttamente.');
+    });
 };
